@@ -1,0 +1,10 @@
+body {
+  overflow: hidden;
+}
+
+.cursor {
+	width: 14px;
+	height: 21px;
+	background: transparent url(cursor.png) no-repeat left top;
+	position: absolute;
+}

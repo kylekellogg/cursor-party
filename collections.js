@@ -1,0 +1,1 @@
+var Cursors = new Meteor.Collection( 'cursors' );
