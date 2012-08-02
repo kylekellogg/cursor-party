@@ -1,9 +1,11 @@
+//  Retrieve all active cursors
 Template.body.get_cursors = function() {
   var max_x = window.innerWidth-14;
   var max_y = window.innerHeight-21;
   return Cursors.find( {_id: {$ne: Session.get( 'id' )}} );
 };
 
+//  Text to display when there are no other cursors
 Template.body.no_cursors = function() {
   var cursors = Cursors.find( {_id: {$ne: Session.get( 'id' )}} ).count();
   if ( cursors < 1 ) {
@@ -14,11 +16,12 @@ Template.body.no_cursors = function() {
 
 Meteor.startup(function clientStart() {
   Meteor.subscribe('cursors', function() {
+    //  Initial add of user's cursor
     Meteor.call('add', {
       user_name:'',
       x:0,
       y:0
-    }, function( error, result ) {
+    }, function onAdd( error, result ) {
       if ( result !== undefined ) {
         //  Clean up DB so each user only has one cursor
         if ( amplify.store( 'id' ) !== undefined ) {
@@ -34,6 +37,8 @@ Meteor.startup(function clientStart() {
           var y = e.pageY !== undefined ? e.pageY : e.screenY !== undefined ? e.screenY : e.clientY + document.body.scrollTop;
           var active = Cursors.find( {}, {_id: Session.get( 'id' )} ).count() > 0;
           
+          //  If not active, reactivate by adding to DB
+          //  Else update with position
           if ( !active ) {
             Meteor.call( 'add', {
               user_name:'',
