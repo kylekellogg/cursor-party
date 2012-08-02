@@ -32,14 +32,23 @@ Meteor.startup(function clientStart() {
         window.onmousemove = function(e) {
           var x = e.pageX !== undefined ? e.pageX : e.screenX !== undefined ? e.screenX : e.clientX + document.body.scrollLeft;
           var y = e.pageY !== undefined ? e.pageY : e.screenY !== undefined ? e.screenY : e.clientY + document.body.scrollTop;
+          var active = Cursors.find( {}, {_id: Session.get( 'id' )} ).count() > 0;
           
-          Meteor.call('update', {
-            id:result,
-            pos:{
+          if ( !active ) {
+            Meteor.call( 'add', {
+              user_name:'',
               x:x,
               y:y
-            }
-          });
+            } );
+          } else {
+            Meteor.call('update', {
+              id:result,
+              pos:{
+                x:x,
+                y:y
+              }
+            });
+          }
         };
       }
     });
